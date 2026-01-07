@@ -1,31 +1,85 @@
-This lab project epitomizes real-world DevOps engineering practices through the design and operation of a cloud-native application platform.
+# DevOpsLab Alpha - Docker Setup
 
-The system follows a production-first approach: the application is stabilized and clearly structured before introducing automation, infrastructure, or orchestration. Frontend and backend services communicate through environment-driven configuration, ensuring consistency across local, containerized, and Kubernetes environments.
+This project uses Docker to containerize both the frontend and backend applications with a PostgreSQL database.
 
-All infrastructure is provisioned using Infrastructure as Code, enabling repeatable, auditable deployments without manual cloud configuration. Application components are deployed as immutable containers and orchestrated with Kubernetes to support scalability, resilience, and zero-downtime updates.
+## Prerequisites
 
-A fully automated CI/CD pipeline handles build, test, security scanning, and deployment, minimizing manual operations and reducing deployment risk. Observability and security are integrated from the start through monitoring, logging, vulnerability scanning, and least-privilege access controls.
+- Docker Desktop installed
+- Docker Compose installed
 
-The project is intentionally simple in application logic but production-minded in architecture, clearly demonstrating cloud, Kubernetes, CI/CD, and operational competencies expected of a modern DevOps engineer.
+## Running the Application
 
-**What This Project Demonstrates**
+To start the entire application stack, run:
 
-- End-to-end DevOps ownership — from application design to deployment and operation
+```bash
+docker-compose up --build
+```
 
-- Cloud-native architecture using AWS and Kubernetes (EKS)
+This will:
+- Build the frontend and backend Docker images
+- Start the PostgreSQL database container
+- Start the backend API server
+- Start the frontend web server
+- Set up networking between all services
 
-- Infrastructure as Code (Terraform) for repeatable, auditable cloud provisioning
+## Services
 
-- Containerization with Docker and immutable deployment practices
+- Frontend: http://localhost:3005
+- Backend API: http://localhost:5000 (also accessible via proxy at http://localhost:3005/api)
+- Database: PostgreSQL on port 5432 (internal only)
 
-- Kubernetes orchestration including services, ingress, scaling, and resilience
+## Environment Variables
 
-- Automated CI/CD pipelines using GitHub Actions (build, test, scan, deploy)
+The application requires environment variables for configuration. For security, sensitive information like database passwords must be stored in environment variables rather than hardcoded.
 
-- DevSecOps practices with container vulnerability scanning and secrets management
+### Backend (.env)
+Create a `.env` file in the `backend/` directory with the following required variables:
+```
+PORT=5000
+NODE_ENV=production
+DB_HOST=db
+DB_USER=postgres
+DB_PASSWORD=your_secure_db_password_here
+DB_NAME=devopslab
+DB_PORT=5432
+```
 
-- Observability and monitoring with metrics, logging, and alerting
+### Frontend (.env)
+Create a `.env` file in the `frontend/` directory with the following variables:
+```
+VITE_API_BASE_URL=http://localhost:3005
+```
 
-- Environment-driven configuration across development and production contexts
+### Docker Compose
+The `docker-compose.yml` file requires all environment variables to be properly set. The application will fail to start if required environment variables are not provided, ensuring that default credentials are not used in production.
 
-- Production-minded system design focused on reliability, scalability, and maintainability
+## Security Best Practices
+
+### Environment Variables and Secrets
+- Never commit `.env` files to version control
+- Use strong, unique passwords for database credentials
+- The project includes `.env.example` files as templates, but actual `.env` files should be added to `.gitignore`
+- All sensitive configuration is loaded from environment variables with no default fallback values for security
+
+### Database Initialization
+
+The database is initialized with:
+- A `statuses` table
+- Initial status records for backend, frontend, and database services
+
+## Stopping the Application
+
+To stop all containers, press `Ctrl+C` in the terminal where `docker-compose up` is running.
+
+To stop and remove containers, networks, and volumes:
+```bash
+docker-compose down -v
+```
+
+## Development Notes
+
+For development, you can run services individually:
+- Backend: `cd backend && npm run dev`
+- Frontend: `cd frontend && npm run dev` (runs on port 3005)
+
+The application is designed to be production-ready with proper separation of concerns, environment configuration, and containerization.
