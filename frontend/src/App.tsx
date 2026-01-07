@@ -19,7 +19,7 @@ function App() {
       try {
         setLoading(true);
         setError(null);
-        const data = await apiClient.get('/api/status');
+        const data = await apiClient.get<BackendStatus>('/api/status');
         setStatus(data);
       } catch (err) {
         setError(err instanceof Error ? err.message : 'An unknown error occurred');
