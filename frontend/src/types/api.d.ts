@@ -1,0 +1,1 @@
+// frontend/src/types/api.d.ts\n\ndeclare module '../api/api' {\n  interface ApiClient {\n    get<T = any>(endpoint: string): Promise<T>;\n    request<T = any>(endpoint: string, options?: RequestInit): Promise<T>;\n  }\n\n  const apiClient: ApiClient;\n  export { apiClient };\n  export default apiClient;\n}

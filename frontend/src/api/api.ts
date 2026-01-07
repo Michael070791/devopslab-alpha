@@ -1,15 +1,27 @@
-// frontend/src/api/api.js
+// frontend/src/api/api.ts
+
+interface RequestOptions {
+  headers?: Record<string, string>;
+  [key: string]: any;
+}
+
+interface ApiResponse {
+  [key: string]: any;
+}
+
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000';
 
 class ApiClient {
-  constructor(baseURL = API_BASE_URL) {
+  baseURL: string;
+
+  constructor(baseURL: string = API_BASE_URL) {
     this.baseURL = baseURL;
   }
 
-  async request(endpoint, options = {}) {
+  async request<T = ApiResponse>(endpoint: string, options: RequestOptions = {}): Promise<T> {
     const url = `${this.baseURL}${endpoint}`;
-    
-    const config = {
+
+    const config: RequestInit = {
       headers: {
         'Content-Type': 'application/json',
         ...options.headers,
@@ -19,12 +31,12 @@ class ApiClient {
 
     try {
       const response = await fetch(url, config);
-      
+
       // Handle non-200 responses
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
-      
+
       const data = await response.json();
       return data;
     } catch (error) {
@@ -34,8 +46,8 @@ class ApiClient {
     }
   }
 
-  async get(endpoint) {
-    return this.request(endpoint, { method: 'GET' });
+  async get<T = ApiResponse>(endpoint: string): Promise<T> {
+    return this.request<T>(endpoint, { method: 'GET' });
   }
 }
 
