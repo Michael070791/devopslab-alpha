@@ -8,7 +8,7 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: ${{ github.repository }}
+  IMAGE_NAME: michael070791/devopslab-alpha
 
 permissions:
   contents: read
@@ -159,7 +159,7 @@ jobs:
       id: meta
       uses: docker/metadata-action@v5
       with:
-        images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+        images: ${{ env.REGISTRY }}/${{ vars.IMAGE_NAME || github.repository }}
         tags: |
           type=ref,event=branch
           type=ref,event=pr
@@ -178,6 +178,8 @@ jobs:
         build-args: |
           NODE_ENV=production
       continue-on-error: false
+      env:
+        DOCKER_BUILDKIT: 1
 
     - name: Build and push frontend Docker image
       uses: docker/build-push-action@v5
