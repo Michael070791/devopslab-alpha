@@ -2,11 +2,11 @@
 
 interface RequestOptions {
   headers?: Record<string, string>;
-  [key: string]: any;
+  [key: string]: unknown;
 }
 
 interface ApiResponse {
-  [key: string]: any;
+  [key: string]: unknown;
 }
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000';

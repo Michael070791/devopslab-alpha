@@ -1,7 +1,7 @@
-declare module './api.js' { 
-  interface ApiClient { 
-    get<T = any>(endpoint: string): Promise<T>;
-    request<T = any>(endpoint: string, options?: RequestInit): Promise<T>;
+declare module './api.js' {
+  interface ApiClient {
+    get<T = Record<string, unknown>>(endpoint: string): Promise<T>;
+    request<T = Record<string, unknown>>(endpoint: string, options?: RequestInit): Promise<T>;
   }
 
   export const apiClient: ApiClient;
